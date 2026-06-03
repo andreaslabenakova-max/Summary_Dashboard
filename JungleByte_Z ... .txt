@@ -1,4 +1,0 @@
-streamlit
-pandas
-plotly
-openpyxlJungleByte_Zoo_Dashboard.xlsx
