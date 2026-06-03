@@ -266,10 +266,12 @@ with right:
 
 # TOP 10 CUSTOMERS
 
-
 customers_chart = (
     df.groupby(
-        "Sold to Customer Name"
+        [
+            "Sold to Customer Name",
+            "Sold to Segment"
+        ]
     )["Sales Amount"]
     .sum()
     .reset_index()
@@ -284,8 +286,10 @@ fig = px.bar(
     customers_chart,
     x="Sales Amount",
     y="Sold to Customer Name",
+    color="Sold to Segment",
     orientation="h",
-    title="Top 10 Customers"
+    title="Top 10 Customers by Segment",
+    hover_data=["Sold to Segment"]
 )
 
 st.plotly_chart(
@@ -293,6 +297,10 @@ st.plotly_chart(
     use_container_width=True
 )
 
+st.dataframe(
+    customers_chart,
+    use_container_width=True
+)
 
 # SALES BY STATE
 
