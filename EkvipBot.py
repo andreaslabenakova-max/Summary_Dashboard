@@ -370,7 +370,7 @@ st.dataframe(
 # DISCOUNT OVERVIEW BY PRODUCT
 
 st.subheader(
-    "Discount Overview by Product"
+    "Discount Overview by Product - Discounts in Descending Order"
 )
 
 discount_products = (
