@@ -77,7 +77,7 @@ df["Delivery Days"] = (
 # FILTRY
 
 
-st.sidebar.header("Filtry")
+st.sidebar.header("Filters")
 
 salesperson_filter = st.sidebar.multiselect(
     "Sales Person",
