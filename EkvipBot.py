@@ -161,39 +161,6 @@ if state_filter:
     ]
 
 
-
-
-# KPI
-
-sales_amount = df["Sales Amount"].sum()
-
-quantity = df["Quantity"].sum()
-
-margin = df["Margin"].sum()
-
-average_delivery_days = (
-    df["Delivery Days"]
-    .mean()
-)
-
-# RETURN RATE
-# Objednávka je považována za vrácenou,
-# pokud obsahuje alespoň jednu položku Returned
-
-total_orders = df["Order ID"].nunique()
-
-returned_orders = (
-    df.groupby("Order ID")["Cancellation"]
-      .apply(lambda x: (x == "Returned").any())
-      .sum()
-)
-
-return_rate = (
-    returned_orders / total_orders * 100
-    if total_orders > 0
-    else 0
-)
-
 # KPI KARTY
 
 st.title("Summary Dashboard")
