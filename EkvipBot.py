@@ -193,7 +193,7 @@ return_rate = (
 
 # KPI KARTY
 
-st.title("Summary Dashboard")
+st.title("Summary Report: 2017-2021")
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
