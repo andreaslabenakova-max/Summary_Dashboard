@@ -1,0 +1,388 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+
+
+st.set_page_config(
+    page_title="Sales Dashboard",
+    layout="wide"
+)
+
+
+# NAČTENÍ DAT
+
+
+FILE  = "Ekvip_Case_Data.xlsx"
+
+orders = pd.read_excel(FILE, sheet_name="Orders")
+customers = pd.read_excel(FILE, sheet_name="Customer Master Data")
+products = pd.read_excel(FILE, sheet_name="Product Master Data")
+sales_person = pd.read_excel(FILE, sheet_name="Sales Person List")
+
+
+# RELACE
+
+
+df = orders.merge(
+    customers,
+    on="Sold to Customer ID",
+    how="left"
+)
+
+df = df.merge(
+    products,
+    on="Product ID",
+    how="left"
+)
+
+df = df.merge(
+    sales_person,
+    left_on="Delivered to Region",
+    right_on="Region",
+    how="left"
+)
+
+
+# DATOVÉ TYPY
+
+
+df["Order Date"] = pd.to_datetime(
+    df["Order Date"],
+    dayfirst=True,
+    errors="coerce"
+)
+
+df["Ship Date"] = pd.to_datetime(
+    df["Ship Date"],
+    dayfirst=True,
+    errors="coerce"
+)
+
+
+# VÝPOČTY
+
+
+df["Margin"] = (
+    df["Sales Amount"]
+    - df["Production Cost Amount"]
+)
+
+df["Delivery Days"] = (
+    df["Ship Date"]
+    - df["Order Date"]
+).dt.days
+
+
+# FILTRY
+
+
+st.sidebar.header("Filtry")
+
+salesperson_filter = st.sidebar.multiselect(
+    "Sales Person",
+    sorted(
+        df["Sales Person"]
+        .dropna()
+        .unique()
+    )
+)
+
+customer_filter = st.sidebar.multiselect(
+    "Customer",
+    sorted(
+        df["Sold to Customer Name"]
+        .dropna()
+        .unique()
+    )
+)
+
+category_filter = st.sidebar.multiselect(
+    "Category",
+    sorted(
+        df["Category"]
+        .dropna()
+        .unique()
+    )
+)
+
+region_filter = st.sidebar.multiselect(
+    "Region",
+    sorted(
+        df["Delivered to Region"]
+        .dropna()
+        .unique()
+    )
+)
+
+state_filter = st.sidebar.multiselect(
+    "State",
+    sorted(
+        df["Delivered to State"]
+        .dropna()
+        .unique()
+    )
+)
+
+
+# APLIKACE FILTRŮ
+
+
+if salesperson_filter:
+    df = df[
+        df["Sales Person"]
+        .isin(salesperson_filter)
+    ]
+
+if customer_filter:
+    df = df[
+        df["Sold to Customer Name"]
+        .isin(customer_filter)
+    ]
+
+if category_filter:
+    df = df[
+        df["Category"]
+        .isin(category_filter)
+    ]
+
+if region_filter:
+    df = df[
+        df["Delivered to Region"]
+        .isin(region_filter)
+    ]
+
+if state_filter:
+    df = df[
+        df["Delivered to State"]
+        .isin(state_filter)
+    ]
+
+
+# KPI
+
+
+sales_amount = df["Sales Amount"].sum()
+
+quantity = df["Quantity"].sum()
+
+margin = df["Margin"].sum()
+
+average_delivery_days = (
+    df["Delivery Days"]
+    .mean()
+)
+
+
+# KPI KARTY
+
+
+st.title("Summary Dashboard")
+
+c1, c2, c3, c4 = st.columns(4)
+
+c1.metric(
+    "Sales Amount",
+    f"${sales_amount:,.0f}"
+)
+
+c2.metric(
+    "Quantity",
+    f"{quantity:,.0f}"
+)
+
+c3.metric(
+    "Margin",
+    f"${margin:,.0f}"
+)
+
+c4.metric(
+    "Average Delivery Days",
+    f"{average_delivery_days:.2f}"
+)
+
+
+# KONTROLA DELIVERY DAYS
+
+
+with st.expander("Kontrola Delivery Days"):
+
+    st.write(
+        "Průměr:",
+        df["Delivery Days"].mean()
+    )
+
+    st.write(
+        "Medián:",
+        df["Delivery Days"].median()
+    )
+
+    st.write(
+        "Minimum:",
+        df["Delivery Days"].min()
+    )
+
+    st.write(
+        "Maximum:",
+        df["Delivery Days"].max()
+    )
+
+    st.write(
+        "Počet řádků:",
+        len(df)
+    )
+
+    st.dataframe(
+        df[
+            [
+                "Order ID",
+                "Order Date",
+                "Ship Date",
+                "Delivery Days"
+            ]
+        ]
+        .sort_values(
+            "Delivery Days",
+            ascending=False
+        )
+        .head(20)
+    )
+
+
+# GRAFY
+
+
+left, right = st.columns(2)
+
+with left:
+
+    sales_person_chart = (
+        df.groupby("Sales Person")["Sales Amount"]
+        .sum()
+        .reset_index()
+        .sort_values(
+            "Sales Amount",
+            ascending=False
+        )
+    )
+
+    fig = px.bar(
+        sales_person_chart,
+        x="Sales Person",
+        y="Sales Amount",
+        title="Sales Amount by Sales Person"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+with right:
+
+    goods = (
+        df.groupby(
+            ["Category", "Sub-Category"]
+        )["Sales Amount"]
+        .sum()
+        .reset_index()
+    )
+
+    fig = px.sunburst(
+        goods,
+        path=[
+            "Category",
+            "Sub-Category"
+        ],
+        values="Sales Amount",
+        title="Sales by Category"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+
+# TOP 10 CUSTOMERS
+
+
+customers_chart = (
+    df.groupby(
+        "Sold to Customer Name"
+    )["Sales Amount"]
+    .sum()
+    .reset_index()
+    .sort_values(
+        "Sales Amount",
+        ascending=False
+    )
+    .head(10)
+)
+
+fig = px.bar(
+    customers_chart,
+    x="Sales Amount",
+    y="Sold to Customer Name",
+    orientation="h",
+    title="Top 10 Customers"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
+
+# SALES BY STATE
+
+
+state_data = (
+    df.groupby(
+        "Delivered to State"
+    )["Sales Amount"]
+    .sum()
+    .reset_index()
+)
+
+fig = px.treemap(
+    state_data,
+    path=["Delivered to State"],
+    values="Sales Amount",
+    title="Sales Amount by State"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
+
+# AVERAGE DISCOUNT
+
+
+discount = (
+    df.groupby("Category")["Discount %"]
+    .mean()
+    .reset_index()
+)
+
+st.subheader(
+    "Average Discount % by Category"
+)
+
+st.dataframe(
+    discount,
+    use_container_width=True
+)
+
+
+# DETAILNÍ DATA
+
+
+st.subheader("Order Details")
+
+st.dataframe(
+    df,
+    use_container_width=True
+)
