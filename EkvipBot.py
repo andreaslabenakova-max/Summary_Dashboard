@@ -383,12 +383,3 @@ st.dataframe(
     use_container_width=True
 )
 
-# DETAILNÍ DATA
-
-
-st.subheader("Order Details")
-
-st.dataframe(
-    df,
-    use_container_width=True
-)
