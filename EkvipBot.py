@@ -320,11 +320,14 @@ st.plotly_chart(
 
 # AVERAGE DISCOUNT
 
-
 discount = (
     df.groupby("Category")["Discount %"]
     .mean()
     .reset_index()
+    .sort_values(
+        "Discount %",
+        ascending=False
+    )
 )
 
 st.subheader(
@@ -336,6 +339,49 @@ st.dataframe(
     use_container_width=True
 )
 
+
+# DISCOUNT OVERVIEW BY PRODUCT
+
+st.subheader(
+    "Discount Overview by Product"
+)
+
+discount_products = (
+    df.groupby(
+        [
+            "Product Name",
+            "Category",
+            "Sub-Category"
+        ]
+    )
+    .agg(
+        {
+            "Discount %": "mean",
+            "Sales Amount": "sum",
+            "Margin": "sum"
+        }
+    )
+    .reset_index()
+    .sort_values(
+        "Discount %",
+        ascending=False
+    )
+)
+
+st.dataframe(
+    discount_products,
+    use_container_width=True
+)
+
+
+# DETAILNÍ DATA
+
+st.subheader("Order Details")
+
+st.dataframe(
+    df,
+    use_container_width=True
+)
 
 # DETAILNÍ DATA
 
