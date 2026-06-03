@@ -202,51 +202,7 @@ c4.metric(
 )
 
 
-# KONTROLA DELIVERY DAYS
 
-
-with st.expander("Kontrola Delivery Days"):
-
-    st.write(
-        "Průměr:",
-        df["Delivery Days"].mean()
-    )
-
-    st.write(
-        "Medián:",
-        df["Delivery Days"].median()
-    )
-
-    st.write(
-        "Minimum:",
-        df["Delivery Days"].min()
-    )
-
-    st.write(
-        "Maximum:",
-        df["Delivery Days"].max()
-    )
-
-    st.write(
-        "Počet řádků:",
-        len(df)
-    )
-
-    st.dataframe(
-        df[
-            [
-                "Order ID",
-                "Order Date",
-                "Ship Date",
-                "Delivery Days"
-            ]
-        ]
-        .sort_values(
-            "Delivery Days",
-            ascending=False
-        )
-        .head(20)
-    )
 
 
 # GRAFY
