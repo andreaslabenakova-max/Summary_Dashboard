@@ -124,15 +124,7 @@ state_filter = st.sidebar.multiselect(
     )
 )
 
-discount_filter = st.sidebar.slider(
-    "Discount %",
-    float(df["Discount %"].min()),
-    float(df["Discount %"].max()),
-    (
-        float(df["Discount %"].min()),
-        float(df["Discount %"].max())
-    )
-)
+
 
 
 # APLIKACE FILTRŮ
@@ -168,11 +160,7 @@ if state_filter:
         .isin(state_filter)
     ]
 
-df = df[
-    (df["Discount %"] >= discount_filter[0])
-    &
-    (df["Discount %"] <= discount_filter[1])
-]
+
 
 
 # KPI
