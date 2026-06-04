@@ -505,7 +505,7 @@ st.plotly_chart(
 
 # Top Selling Products
 
-st.subheader("Top 20 Products by Sales Amount")
+st.subheader("Top 10 Products by Sales Amount")
 
 top_products = (
     df.groupby("Product Name")
