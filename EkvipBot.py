@@ -85,14 +85,6 @@ segment_filter = st.sidebar.multiselect(
     )
 )
 
-salesperson_filter = st.sidebar.multiselect(
-    "Sales Person",
-    sorted(
-        df["Sales Person"]
-        .dropna()
-        .unique()
-    )
-)
 
 
 st.sidebar.header("Filters")
