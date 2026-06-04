@@ -240,6 +240,69 @@ c6.metric(
     f"{orders_count:,.0f}"
 )
 
+# KPI Trends
+
+kpi_by_year = (
+    df.assign(Year=df["Ship Date"].dt.year)
+      .groupby("Year")
+      .agg({
+          "Sales Amount": "sum",
+          "Quantity": "sum",
+          "Margin": "sum",
+          "Delivery Days": "mean",
+          "Order ID": "nunique"
+      })
+      .reset_index()
+)
+
+kpi_by_year.rename(
+    columns={
+        "Order ID": "Orders"
+    },
+    inplace=True
+)
+
+t1, t2, t3 = st.columns(3)
+
+with t1:
+    fig = px.line(
+        kpi_by_year,
+        x="Year",
+        y="Sales Amount",
+        markers=True
+    )
+    fig.update_layout(
+        title="Sales Amount Trend",
+        height=250
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+with t2:
+    fig = px.line(
+        kpi_by_year,
+        x="Year",
+        y="Orders",
+        markers=True
+    )
+    fig.update_layout(
+        title="Orders Trend",
+        height=250
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+with t3:
+    fig = px.line(
+        kpi_by_year,
+        x="Year",
+        y="Margin",
+        markers=True
+    )
+    fig.update_layout(
+        title="Margin Trend",
+        height=250
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
 
 
 # Grafy
