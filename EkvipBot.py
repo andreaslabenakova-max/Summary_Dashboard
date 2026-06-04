@@ -74,6 +74,26 @@ df["Delivery Days"] = (
 
 # Filtry - 
 
+st.sidebar.header("Filters")
+
+segment_filter = st.sidebar.multiselect(
+    "Sold to Segment",
+    sorted(
+        df["Sold to Segment"]
+        .dropna()
+        .unique()
+    )
+)
+
+salesperson_filter = st.sidebar.multiselect(
+    "Sales Person",
+    sorted(
+        df["Sales Person"]
+        .dropna()
+        .unique()
+    )
+)
+
 
 st.sidebar.header("Filters")
 
