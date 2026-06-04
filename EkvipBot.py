@@ -3,14 +3,13 @@ import pandas as pd
 import plotly.express as px
 
 
-
 st.set_page_config(
     page_title="Sales Dashboard",
     layout="wide"
 )
 
 
-# NAČTENÍ DAT
+# Načtení excelu
 
 
 FILE  = "Ekvip_Case_Data.xlsx"
@@ -21,8 +20,7 @@ products = pd.read_excel(FILE, sheet_name="Product Master Data")
 sales_person = pd.read_excel(FILE, sheet_name="Sales Person List")
 
 
-# RELACE
-
+# Vytvoření relací
 
 df = orders.merge(
     customers,
@@ -60,7 +58,7 @@ df["Ship Date"] = pd.to_datetime(
 )
 
 
-# VÝPOČTY
+# Výpočty - sloupec margin, Delivery Days, 
 
 
 df["Margin"] = (
@@ -74,7 +72,7 @@ df["Delivery Days"] = (
 ).dt.days
 
 
-# FILTRY
+# Filtry - 
 
 
 st.sidebar.header("Filters")
@@ -125,9 +123,7 @@ state_filter = st.sidebar.multiselect(
 )
 
 
-
-
-# APLIKACE FILTRŮ
+# Aplikace Filtrů
 
 
 if salesperson_filter:
@@ -161,7 +157,7 @@ if state_filter:
     ]
 
 
-# KPI
+# KPI - výkonnostní ukazatele
 
 sales_amount = df["Sales Amount"].sum()
 
@@ -193,7 +189,7 @@ return_rate = (
 
 # KPI KARTY
 
-st.title("Summary Report: 2017-2021")
+st.title("Summary Dashboard")
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
@@ -224,11 +220,7 @@ c5.metric(
 
 
 
-
-
-
-
-# GRAFY
+# Grafy
 
 
 left, right = st.columns(2)
@@ -283,7 +275,7 @@ with right:
     )
 
 
-# TOP 10 CUSTOMERS
+# Top 10 customers
 
 customers_chart = (
     df.groupby(
@@ -321,12 +313,8 @@ st.dataframe(
     use_container_width=True
 )
 
-# SALES BY STATE
+# States chart
 
-
-
-
-# SALES BY STATE
 
 state_data = (
     df.groupby(
@@ -348,32 +336,8 @@ st.plotly_chart(
     use_container_width=True
 )
 
-# --------------------
-# NOVÁ MAPA
-# --------------------
 
-state_data["State Code"] = (
-    state_data["Delivered to State"]
-    .map(state_codes)
-)
-
-fig = px.choropleth(
-    state_data,
-    locations="State Code",
-    locationmode="USA-states",
-    color="Sales Amount",
-    scope="usa",
-    hover_name="Delivered to State",
-    title="Sales Amount by State - Map"
-)
-
-st.plotly_chart(
-    fig,
-    use_container_width=True
-)
-
-
-# AVERAGE DISCOUNT
+# Average discount
 
 discount = (
     df.groupby("Category")["Discount %"]
@@ -395,10 +359,10 @@ st.dataframe(
 )
 
 
-# DISCOUNT OVERVIEW BY PRODUCT
+# DISCOUNT OVERVIEW BY PRODUCT Name
 
 st.subheader(
-    "Discount Overview by Product - Discounts in Descending Order"
+    "Discount Overview by Product"
 )
 
 discount_products = (
@@ -429,7 +393,7 @@ st.dataframe(
 )
 
 
-# DETAILNÍ DATA
+# Detailní data
 
 st.subheader("Order Details")
 
@@ -437,4 +401,3 @@ st.dataframe(
     df,
     use_container_width=True
 )
-
