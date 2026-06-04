@@ -337,11 +337,11 @@ st.plotly_chart(
 )
 
 
-# Top 5 Countries Map
+# Dynamic Map (USA states or countries)
 
-st.subheader("Top 5 Countries by Sales")
+st.subheader("Top 5 Locations by Sales")
 
-top_countries = (
+top_locations = (
     df.groupby("Delivered to State")["Sales Amount"]
     .sum()
     .reset_index()
@@ -352,14 +352,50 @@ top_countries = (
     .head(5)
 )
 
-fig = px.choropleth(
-    top_countries,
-    locations="Delivered to State",
-    locationmode="country names",
-    color="Sales Amount",
-    hover_name="Delivered to State",
-    title="Top 5 Countries by Sales"
-)
+us_state_abbrev = {
+    "Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR",
+    "California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE",
+    "Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID",
+    "Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS",
+    "Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD",
+    "Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS",
+    "Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV",
+    "New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY",
+    "North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK",
+    "Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC",
+    "South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT",
+    "Vermont":"VT","Virginia":"VA","Washington":"WA","West Virginia":"WV",
+    "Wisconsin":"WI","Wyoming":"WY"
+}
+
+# Pokud jsou všechny hodnoty US státy
+if top_locations["Delivered to State"].isin(us_state_abbrev.keys()).all():
+
+    top_locations["Code"] = (
+        top_locations["Delivered to State"]
+        .map(us_state_abbrev)
+    )
+
+    fig = px.choropleth(
+        top_locations,
+        locations="Code",
+        locationmode="USA-states",
+        color="Sales Amount",
+        scope="usa",
+        hover_name="Delivered to State",
+        title="Top 5 States by Sales"
+    )
+
+else:
+
+    fig = px.choropleth(
+        top_locations,
+        locations="Delivered to State",
+        locationmode="country names",
+        color="Sales Amount",
+        hover_name="Delivered to State",
+        title="Top 5 Countries by Sales"
+    )
 
 st.plotly_chart(
     fig,
