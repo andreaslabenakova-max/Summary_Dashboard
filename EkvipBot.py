@@ -242,6 +242,8 @@ c6.metric(
 
 # KPI Trends
 
+st.subheader("KPI Trends")
+
 kpi_by_year = (
     df.assign(Year=df["Ship Date"].dt.year)
       .groupby("Year")
@@ -262,46 +264,106 @@ kpi_by_year.rename(
     inplace=True
 )
 
+# vždy zobraz roky 2017–2021
+all_years = pd.DataFrame(
+    {"Year": [2017, 2018, 2019, 2020, 2021]}
+)
+
+kpi_by_year = (
+    all_years
+    .merge(
+        kpi_by_year,
+        on="Year",
+        how="left"
+    )
+    .fillna(0)
+)
+
 t1, t2, t3 = st.columns(3)
 
 with t1:
+
     fig = px.line(
         kpi_by_year,
         x="Year",
         y="Sales Amount",
         markers=True
     )
+
     fig.update_layout(
-        title="Sales Amount Trend",
-        height=250
+        title="Sales Amount",
+        height=150,
+        showlegend=False,
+        margin=dict(l=5, r=5, t=30, b=5),
+        xaxis_title=None,
+        yaxis_title=None
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    fig.update_xaxes(
+        tickmode="array",
+        tickvals=[2017, 2018, 2019, 2020, 2021]
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 with t2:
+
     fig = px.line(
         kpi_by_year,
         x="Year",
         y="Orders",
         markers=True
     )
+
     fig.update_layout(
-        title="Orders Trend",
-        height=250
+        title="Orders",
+        height=150,
+        showlegend=False,
+        margin=dict(l=5, r=5, t=30, b=5),
+        xaxis_title=None,
+        yaxis_title=None
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    fig.update_xaxes(
+        tickmode="array",
+        tickvals=[2017, 2018, 2019, 2020, 2021]
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 with t3:
+
     fig = px.line(
         kpi_by_year,
         x="Year",
         y="Margin",
         markers=True
     )
+
     fig.update_layout(
-        title="Margin Trend",
-        height=250
+        title="Margin",
+        height=150,
+        showlegend=False,
+        margin=dict(l=5, r=5, t=30, b=5),
+        xaxis_title=None,
+        yaxis_title=None
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    fig.update_xaxes(
+        tickmode="array",
+        tickvals=[2017, 2018, 2019, 2020, 2021]
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
 
 
