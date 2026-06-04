@@ -446,39 +446,42 @@ st.dataframe(
     use_container_width=True
 )
 
+# Sales Amount Trend by Year
 
-# DISCOUNT OVERVIEW BY PRODUCT Name
+st.subheader("Sales Amount Trend by Year")
 
-st.subheader(
-    "Discount Overview by Product - Products in Descending Order"
+sales_by_year = (
+    df.groupby(
+        df["Ship Date"].dt.year
+    )["Sales Amount"]
+    .sum()
+    .reset_index()
 )
 
-discount_products = (
-    df.groupby(
-        [
-            "Product Name",
-            "Category",
-            "Sub-Category"
-        ]
-    )
-    .agg(
-        {
-            "Discount %": "mean",
-            "Sales Amount": "sum",
-            "Margin": "sum"
-        }
-    )
-    .reset_index()
-    .sort_values(
-        "Discount %",
-        ascending=False
-    )
+sales_by_year.columns = [
+    "Year",
+    "Sales Amount"
+]
+
+fig = px.bar(
+    sales_by_year,
+    x="Year",
+    y="Sales Amount",
+    text_auto=".2s",
+    title="Sales Amount by Year"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
 )
 
 st.dataframe(
-    discount_products,
+    sales_by_year,
     use_container_width=True
 )
+
+
 
 
 # Detailní data
