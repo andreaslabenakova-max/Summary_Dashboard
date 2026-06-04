@@ -317,18 +317,17 @@ def mini_trend(column, title, container):
         )
 
         fig.update_layout(
-            title=title,
-            height=80,
-            showlegend=False,
-            margin=dict(
-                l=0,
-                r=0,
-                t=20,
-                b=0
-            ),
-            xaxis_title=None,
-            yaxis_title=None
-        )
+    height=80,
+    showlegend=False,
+    margin=dict(
+        l=0,
+        r=0,
+        t=0,
+        b=0
+    ),
+    xaxis_title=None,
+    yaxis_title=None
+)
 
         # zobraz roky 2017–2021
         fig.update_xaxes(
