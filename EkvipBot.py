@@ -240,11 +240,9 @@ c6.metric(
     f"{orders_count:,.0f}"
 )
 
+
 # KPI Trends
 
-st.subheader("KPI Trends")
-
-# základní KPI po letech
 kpi_by_year = (
     df.assign(Year=df["Ship Date"].dt.year)
       .groupby("Year")
@@ -265,7 +263,23 @@ kpi_by_year.rename(
     inplace=True
 )
 
+# pevně roky 2017–2021
+all_years = pd.DataFrame(
+    {"Year": [2017, 2018, 2019, 2020, 2021]}
+)
+
+kpi_by_year = (
+    all_years
+    .merge(
+        kpi_by_year,
+        on="Year",
+        how="left"
+    )
+    .fillna(0)
+)
+
 # Return Rate po letech
+
 returns_by_year = (
     df.assign(Year=df["Ship Date"].dt.year)
       .groupby("Year")
@@ -279,13 +293,15 @@ returns_by_year = (
       .reset_index(name="Return Rate")
 )
 
-kpi_by_year = kpi_by_year.merge(
-    returns_by_year,
-    on="Year",
-    how="left"
-).fillna(0)
-
-# 6 mini trendů vedle sebe
+kpi_by_year = (
+    kpi_by_year
+    .merge(
+        returns_by_year,
+        on="Year",
+        how="left"
+    )
+    .fillna(0)
+)
 
 t1, t2, t3, t4, t5, t6 = st.columns(6)
 
@@ -302,25 +318,25 @@ def mini_trend(column, title, container):
 
         fig.update_layout(
             title=title,
-            height=100,
+            height=80,
             showlegend=False,
             margin=dict(
                 l=0,
                 r=0,
-                t=25,
+                t=20,
                 b=0
             ),
             xaxis_title=None,
             yaxis_title=None
         )
 
+        # zobraz roky 2017–2021
         fig.update_xaxes(
-            visible=False
+            tickmode="array",
+            tickvals=[2017, 2018, 2019, 2020, 2021]
         )
 
-        fig.update_yaxes(
-            visible=False
-        )
+        fig.update_yaxes(visible=False)
 
         st.plotly_chart(
             fig,
