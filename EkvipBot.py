@@ -74,7 +74,6 @@ df["Delivery Days"] = (
 
 # Filtry - 
 
-st.sidebar.header("Filters")
 
 st.sidebar.header("Filters")
 
