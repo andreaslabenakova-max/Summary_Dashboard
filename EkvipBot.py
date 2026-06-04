@@ -520,9 +520,9 @@ top_products = (
     df.groupby("Product Name")
       .agg(
           {
-              "Quantity": "sum",
+              
               "Sales Amount": "sum",
-              "Margin": "sum"
+              
           }
       )
       .reset_index()
@@ -530,7 +530,7 @@ top_products = (
           "Sales Amount",
           ascending=False
       )
-      .head(20)
+      .head(10)
 )
 
 fig = px.bar(
