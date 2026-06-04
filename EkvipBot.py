@@ -182,7 +182,7 @@ orders_count = df["Order ID"].nunique()
 
 margin = df["Margin"].sum()
 
-average_delivery_days = (
+average_days_to_sell = (
     df["Days to Sell"]
     .first()
     .mean()
@@ -251,7 +251,7 @@ kpi_by_year = (
           "Sales Amount": "sum",
           "Quantity": "sum",
           "Margin": "sum",
-          "Delivery Days": "mean",
+          "Days to Sell": "mean",
           "Order ID": "nunique"
       })
       .reset_index()
@@ -341,7 +341,7 @@ def mini_trend(column, title, container):
 mini_trend("Sales Amount", "Sales", t1)
 mini_trend("Quantity", "Qty", t2)
 mini_trend("Margin", "Margin", t3)
-mini_trend("Delivery Days", "Delivery", t4)
+mini_trend("Days to Sell", "Delivery", t4)
 mini_trend("Return Rate", "Returns", t5)
 mini_trend("Orders", "Orders", t6)
 
