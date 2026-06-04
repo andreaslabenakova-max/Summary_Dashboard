@@ -341,17 +341,17 @@ st.plotly_chart(
 st.subheader("Sales by Country")
 
 country_sales = (
-    df.groupby("Country")["Sales Amount"]
+    df.groupby("Delivered to State")["Sales Amount"]
     .sum()
     .reset_index()
 )
 
 fig = px.choropleth(
     country_sales,
-    locations="Country",
+    locations="Delivered to State",
     locationmode="country names",
     color="Sales Amount",
-    hover_name="Country",
+    hover_name="Delivered to State",
     title="Sales by Country"
 )
 
