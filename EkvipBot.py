@@ -529,7 +529,7 @@ fig = px.bar(
     x="Sales Amount",
     y="Product Name",
     orientation="h",
-    title="Top 20 Products by Sales Amount"
+    title="Top 10 Products by Sales Amount"
 )
 
 fig.update_layout(
