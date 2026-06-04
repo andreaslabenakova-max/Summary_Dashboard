@@ -541,7 +541,4 @@ st.plotly_chart(
     use_container_width=True
 )
 
-st.dataframe(
-    top_products,
-    use_container_width=True
-)
+
