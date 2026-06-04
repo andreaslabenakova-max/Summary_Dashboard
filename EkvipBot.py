@@ -189,7 +189,7 @@ return_rate = (
 
 # KPI KARTY
 
-st.title("Summary Dashboard")
+st.title("Summary Report: 2017:2021")
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
@@ -362,7 +362,7 @@ st.dataframe(
 # DISCOUNT OVERVIEW BY PRODUCT Name
 
 st.subheader(
-    "Discount Overview by Product"
+    "Discount Overview by Product - Products in Descending Order"
 )
 
 discount_products = (
