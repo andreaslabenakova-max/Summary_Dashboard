@@ -344,6 +344,52 @@ st.plotly_chart(
     use_container_width=True
 )
 
+# SALES BY STATE
+
+state_data = (
+    df.groupby(
+        "Delivered to State"
+    )["Sales Amount"]
+    .sum()
+    .reset_index()
+)
+
+fig = px.treemap(
+    state_data,
+    path=["Delivered to State"],
+    values="Sales Amount",
+    title="Sales Amount by State"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
+# --------------------
+# NOVÁ MAPA
+# --------------------
+
+state_data["State Code"] = (
+    state_data["Delivered to State"]
+    .map(state_codes)
+)
+
+fig = px.choropleth(
+    state_data,
+    locations="State Code",
+    locationmode="USA-states",
+    color="Sales Amount",
+    scope="usa",
+    hover_name="Delivered to State",
+    title="Sales Amount by State - Map"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
 
 # AVERAGE DISCOUNT
 
