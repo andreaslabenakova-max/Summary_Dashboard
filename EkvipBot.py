@@ -134,6 +134,12 @@ state_filter = st.sidebar.multiselect(
 
 # Aplikace Filtrů
 
+if segment_filter:
+    df = df[
+        df["Sold to Segment"]
+        .isin(segment_filter)
+    ]
+
 
 if salesperson_filter:
     df = df[
