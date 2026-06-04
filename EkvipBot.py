@@ -182,10 +182,22 @@ orders_count = df["Order ID"].nunique()
 
 margin = df["Margin"].sum()
 
+order_delivery = (
+    df.groupby("Order ID")
+      .agg({
+          "Order Date": "min",
+          "Ship Date": "min"
+      })
+)
+
+order_delivery["Days to Sell"] = (
+    order_delivery["Ship Date"]
+    - order_delivery["Order Date"]
+).dt.days
+
 average_days_to_sell = (
-    df.groupby("Order ID")["Days to Sell"]
-      .first()
-      .mean()
+    order_delivery["Days to Sell"]
+    .mean()
 )
 
 # RETURN RATE
