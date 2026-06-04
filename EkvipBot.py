@@ -336,23 +336,29 @@ st.plotly_chart(
     use_container_width=True
 )
 
-# Country map
 
-st.subheader("Sales by Country")
+# Top 5 Countries Map
 
-country_sales = (
+st.subheader("Top 5 Countries by Sales")
+
+top_countries = (
     df.groupby("Delivered to State")["Sales Amount"]
     .sum()
     .reset_index()
+    .sort_values(
+        "Sales Amount",
+        ascending=False
+    )
+    .head(5)
 )
 
 fig = px.choropleth(
-    country_sales,
+    top_countries,
     locations="Delivered to State",
     locationmode="country names",
     color="Sales Amount",
     hover_name="Delivered to State",
-    title="Sales by Country"
+    title="Top 5 Countries by Sales"
 )
 
 st.plotly_chart(
