@@ -244,6 +244,7 @@ c6.metric(
 
 st.subheader("KPI Trends")
 
+# základní KPI po letech
 kpi_by_year = (
     df.assign(Year=df["Ship Date"].dt.year)
       .groupby("Year")
@@ -264,107 +265,74 @@ kpi_by_year.rename(
     inplace=True
 )
 
-# vždy zobraz roky 2017–2021
-all_years = pd.DataFrame(
-    {"Year": [2017, 2018, 2019, 2020, 2021]}
+# Return Rate po letech
+returns_by_year = (
+    df.assign(Year=df["Ship Date"].dt.year)
+      .groupby("Year")
+      .apply(
+          lambda x: (
+              x.groupby("Order ID")["Cancellation"]
+               .apply(lambda y: (y == "Returned").any())
+               .mean() * 100
+          )
+      )
+      .reset_index(name="Return Rate")
 )
 
-kpi_by_year = (
-    all_years
-    .merge(
-        kpi_by_year,
-        on="Year",
-        how="left"
-    )
-    .fillna(0)
-)
+kpi_by_year = kpi_by_year.merge(
+    returns_by_year,
+    on="Year",
+    how="left"
+).fillna(0)
 
-t1, t2, t3 = st.columns(3)
+# 6 mini trendů vedle sebe
 
-with t1:
+t1, t2, t3, t4, t5, t6 = st.columns(6)
 
-    fig = px.line(
-        kpi_by_year,
-        x="Year",
-        y="Sales Amount",
-        markers=True
-    )
+def mini_trend(column, title, container):
 
-    fig.update_layout(
-        title="Sales Amount",
-        height=150,
-        showlegend=False,
-        margin=dict(l=5, r=5, t=30, b=5),
-        xaxis_title=None,
-        yaxis_title=None
-    )
+    with container:
 
-    fig.update_xaxes(
-        tickmode="array",
-        tickvals=[2017, 2018, 2019, 2020, 2021]
-    )
+        fig = px.line(
+            kpi_by_year,
+            x="Year",
+            y=column,
+            markers=True
+        )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+        fig.update_layout(
+            title=title,
+            height=100,
+            showlegend=False,
+            margin=dict(
+                l=0,
+                r=0,
+                t=25,
+                b=0
+            ),
+            xaxis_title=None,
+            yaxis_title=None
+        )
 
-with t2:
+        fig.update_xaxes(
+            visible=False
+        )
 
-    fig = px.line(
-        kpi_by_year,
-        x="Year",
-        y="Orders",
-        markers=True
-    )
+        fig.update_yaxes(
+            visible=False
+        )
 
-    fig.update_layout(
-        title="Orders",
-        height=150,
-        showlegend=False,
-        margin=dict(l=5, r=5, t=30, b=5),
-        xaxis_title=None,
-        yaxis_title=None
-    )
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
 
-    fig.update_xaxes(
-        tickmode="array",
-        tickvals=[2017, 2018, 2019, 2020, 2021]
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-with t3:
-
-    fig = px.line(
-        kpi_by_year,
-        x="Year",
-        y="Margin",
-        markers=True
-    )
-
-    fig.update_layout(
-        title="Margin",
-        height=150,
-        showlegend=False,
-        margin=dict(l=5, r=5, t=30, b=5),
-        xaxis_title=None,
-        yaxis_title=None
-    )
-
-    fig.update_xaxes(
-        tickmode="array",
-        tickvals=[2017, 2018, 2019, 2020, 2021]
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
+mini_trend("Sales Amount", "Sales", t1)
+mini_trend("Quantity", "Qty", t2)
+mini_trend("Margin", "Margin", t3)
+mini_trend("Delivery Days", "Delivery", t4)
+mini_trend("Return Rate", "Returns", t5)
+mini_trend("Orders", "Orders", t6)
 
 
 # Grafy
