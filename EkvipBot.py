@@ -178,6 +178,8 @@ sales_amount = df["Sales Amount"].sum()
 
 quantity = df["Quantity"].sum()
 
+orders_count = df["Order ID"].nunique()
+
 margin = df["Margin"].sum()
 
 average_delivery_days = (
@@ -206,7 +208,7 @@ return_rate = (
 
 st.title("Summary Report: 2017:2021")
 
-c1, c2, c3, c4, c5 = st.columns(5)
+c1, c2, c3, c4, c5, c6 = st.columns(6)
 
 c1.metric(
     "Sales Amount",
@@ -231,6 +233,11 @@ c4.metric(
 c5.metric(
     "Orders With Return",
     f"{return_rate:.2f}%"
+)
+
+c6.metric(
+    "Orders",
+    f"{orders_count:,.0f}"
 )
 
 
