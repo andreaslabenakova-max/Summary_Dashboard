@@ -324,25 +324,7 @@ st.dataframe(
 # SALES BY STATE
 
 
-state_data = (
-    df.groupby(
-        "Delivered to State"
-    )["Sales Amount"]
-    .sum()
-    .reset_index()
-)
 
-fig = px.treemap(
-    state_data,
-    path=["Delivered to State"],
-    values="Sales Amount",
-    title="Sales Amount by State"
-)
-
-st.plotly_chart(
-    fig,
-    use_container_width=True
-)
 
 # SALES BY STATE
 
