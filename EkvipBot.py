@@ -503,11 +503,45 @@ st.plotly_chart(
 
 
 
-# Detailní data
+# Top Selling Products
 
-st.subheader("Order Details")
+st.subheader("Top 20 Products by Sales Amount")
+
+top_products = (
+    df.groupby("Product Name")
+      .agg(
+          {
+              "Quantity": "sum",
+              "Sales Amount": "sum",
+              "Margin": "sum"
+          }
+      )
+      .reset_index()
+      .sort_values(
+          "Sales Amount",
+          ascending=False
+      )
+      .head(20)
+)
+
+fig = px.bar(
+    top_products,
+    x="Sales Amount",
+    y="Product Name",
+    orientation="h",
+    title="Top 20 Products by Sales Amount"
+)
+
+fig.update_layout(
+    yaxis={"categoryorder": "total ascending"}
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
 
 st.dataframe(
-    df,
+    top_products,
     use_container_width=True
 )
