@@ -66,7 +66,7 @@ df["Margin"] = (
     - df["Production Cost Amount"]
 )
 
-df["Delivery Days"] = (
+df["Days to Sell"] = (
     df["Ship Date"]
     - df["Order Date"]
 ).dt.days
@@ -183,7 +183,8 @@ orders_count = df["Order ID"].nunique()
 margin = df["Margin"].sum()
 
 average_delivery_days = (
-    df["Delivery Days"]
+    df["Days to Sell"]
+    .first()
     .mean()
 )
 
@@ -226,8 +227,8 @@ c3.metric(
 )
 
 c4.metric(
-    "Average Delivery Days",
-    f"{average_delivery_days:.2f}"
+    "Average Days to Sell",
+    f"{average_days_to_sell:.2f}"
 )
 
 c5.metric(
