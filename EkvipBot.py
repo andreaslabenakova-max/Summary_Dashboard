@@ -250,21 +250,33 @@ left, right = st.columns(2)
 with left:
 
     sales_person_chart = (
-        df.groupby("Sales Person")["Sales Amount"]
-        .sum()
-        .reset_index()
-        .sort_values(
-            "Sales Amount",
-            ascending=False
-        )
-    )
+    df.assign(Year=df["Ship Date"].dt.year)
+      .groupby(
+          ["Sales Person", "Year"]
+      )["Sales Amount"]
+      .sum()
+      .reset_index()
+)
 
-    fig = px.bar(
-        sales_person_chart,
-        x="Sales Person",
-        y="Sales Amount",
-        title="Sales Amount by Sales Person"
-    )
+fig = px.bar(
+    sales_person_chart,
+    x="Sales Person",
+    y="Sales Amount",
+    color="Year",
+    barmode="group",
+    title="Sales Amount by Sales Person and Year"
+)
+
+fig.update_layout(
+    xaxis_title="Sales Person",
+    yaxis_title="Sales Amount",
+    legend_title="Year"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
 
     st.plotly_chart(
         fig,
