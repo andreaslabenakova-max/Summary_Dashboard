@@ -208,7 +208,7 @@ return_rate = (
 
 st.title("Summary Report: 2017:2021")
 
-c1, c2, c3, c4, c5, c6 = st.columns([1.5,1,1,1,1,1])
+c1, c2, c3, c4, c5, c6 = st.columns([1.2,1,1,1,1,1])
 
 c1.metric(
     "Sales Amount",
