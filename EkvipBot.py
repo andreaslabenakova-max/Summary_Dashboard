@@ -339,10 +339,7 @@ st.plotly_chart(
     use_container_width=True
 )
 
-st.dataframe(
-    customers_chart,
-    use_container_width=True
-)
+
 
 # States chart
 
