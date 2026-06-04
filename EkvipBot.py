@@ -329,12 +329,7 @@ def mini_trend(column, title, container):
     yaxis_title=None
 )
 
-        # zobraz roky 2017–2021
-        fig.update_xaxes(
-            tickmode="array",
-            tickvals=[2017, 2018, 2019, 2020, 2021]
-        )
-
+        fig.update_xaxes(visible=False)
         fig.update_yaxes(visible=False)
 
         st.plotly_chart(
