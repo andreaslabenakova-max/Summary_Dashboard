@@ -336,6 +336,30 @@ st.plotly_chart(
     use_container_width=True
 )
 
+# Country map
+
+st.subheader("Sales by Country")
+
+country_sales = (
+    df.groupby("Country")["Sales Amount"]
+    .sum()
+    .reset_index()
+)
+
+fig = px.choropleth(
+    country_sales,
+    locations="Country",
+    locationmode="country names",
+    color="Sales Amount",
+    hover_name="Country",
+    title="Sales by Country"
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
 
 # Average discount
 
