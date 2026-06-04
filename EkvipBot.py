@@ -451,33 +451,52 @@ st.dataframe(
 st.subheader("Sales Amount Trend by Year")
 
 sales_by_year = (
-    df.groupby(
-        df["Ship Date"].dt.year
-    )["Sales Amount"]
-    .sum()
-    .reset_index()
+    df.assign(Year=df["Ship Date"].dt.year)
+      .groupby("Year")["Sales Amount"]
+      .sum()
+      .reset_index()
 )
 
-sales_by_year.columns = [
-    "Year",
-    "Sales Amount"
-]
+# zajistí zobrazení všech let 2017–2021
+all_years = pd.DataFrame(
+    {"Year": [2017, 2018, 2019, 2020, 2021]}
+)
 
-fig = px.bar(
+sales_by_year = (
+    all_years
+    .merge(
+        sales_by_year,
+        on="Year",
+        how="left"
+    )
+    .fillna(0)
+)
+
+fig = px.line(
     sales_by_year,
     x="Year",
     y="Sales Amount",
-    text_auto=".2s",
-    title="Sales Amount by Year"
+    markers=True,
+    title="Sales Amount Trend by Year"
+)
+
+fig.update_traces(
+    line=dict(width=4),
+    marker=dict(size=10)
+)
+
+fig.update_layout(
+    xaxis=dict(
+        tickmode="array",
+        tickvals=[2017, 2018, 2019, 2020, 2021]
+    ),
+    yaxis_title="Sales Amount",
+    xaxis_title="Year",
+    hovermode="x unified"
 )
 
 st.plotly_chart(
     fig,
-    use_container_width=True
-)
-
-st.dataframe(
-    sales_by_year,
     use_container_width=True
 )
 
