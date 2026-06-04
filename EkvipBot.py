@@ -451,9 +451,7 @@ st.dataframe(
     discount,
     use_container_width=True
 )
-
 # Sales Amount Trend by Year
-
 st.subheader("Sales Amount Trend by Year")
 
 sales_by_year = (
