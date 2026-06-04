@@ -84,6 +84,7 @@ segment_filter = st.sidebar.multiselect(
         .dropna()
         .unique()
     )
+)
 
 salesperson_filter = st.sidebar.multiselect(
     "Sales Person",
